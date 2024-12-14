@@ -2,49 +2,44 @@ import os
 import time
 
 class Config(object):
-
-    # Get a bot token from botfather
+    # Get a bot token from BotFather
     TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
+    if not TG_BOT_TOKEN:
+        raise ValueError("Missing TG_BOT_TOKEN environment variable")
 
+    # Get API ID and Hash from https://my.telegram.org
+    API_ID = os.environ.get("API_ID", None)
+    if not API_ID or not API_ID.isdigit():
+        raise ValueError("Invalid or missing API_ID environment variable")
+    API_ID = int(API_ID)
 
-    # Get from my.telegram.org (or @UselessBot)
-    API_ID = int(os.environ.get("API_ID", 12345))
-
-
-    # Get from my.telegram.org (or @UselessBot)
     API_HASH = os.environ.get("API_HASH", "")
-    
-    
-    # Database URL from https://cloud.mongodb.com/
+    if not API_HASH:
+        raise ValueError("Missing API_HASH environment variable")
+
+    # Database URL from MongoDB Atlas or other sources
     DATABASE_URI = os.environ.get("DATABASE_URI", "")
+    if not DATABASE_URI:
+        raise ValueError("Missing DATABASE_URI environment variable")
 
+    # Database name for MongoDB
+    DATABASE_NAME = os.environ.get("DATABASE_NAME", "Cluster0")
 
-    # Your database name from mongoDB
-    DATABASE_NAME = str(os.environ.get("DATABASE_NAME", "Cluster0"))
+    # IDs of authorized users (comma-separated in environment variable)
+    AUTH_USERS = {int(x) for x in os.environ.get("AUTH_USERS", "").split(",") if x.isdigit()}
 
+    # Option to save user details
+    SAVE_USER = os.environ.get("SAVE_USER", "no").lower() == "yes"
 
-    # ID of users that can use the bot commands
-    AUTH_USERS = set(str(x) for x in os.environ.get("AUTH_USERS", "").split())
-
-
-    # To save user details (Usefull for getting userinfo and total user counts)
-    # May reduce filter capacity :(
-    # Give yes or no
-    SAVE_USER = os.environ.get("SAVE_USER", "no").lower()
-
-
-    # Go to https://dashboard.heroku.com/account, scroll down and press Reveal API
-    # To check dyno status
+    # Optional: Heroku API Key for checking dyno status
     HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY", "")
 
-
-    # OPTIONAL - To set alternate BOT COMMANDS
+    # Commands (with optional customizations via environment variables)
     ADD_FILTER_CMD = os.environ.get("ADD_FILTER_CMD", "add")
-    DELETE_FILTER_CMD = os.environ.get("DELETE_FILTER_CMDD", "del")
-    DELETE_ALL_CMD = os.environ.get("DELETE_ALL_CMDD", "delall")
-    CONNECT_COMMAND = os.environ.get("CONNECT_COMMANDD", "connect")
-    DISCONNECT_COMMAND = os.environ.get("DISCONNECT_COMMANDD", "disconnect")
+    DELETE_FILTER_CMD = os.environ.get("DELETE_FILTER_CMD", "del")
+    DELETE_ALL_CMD = os.environ.get("DELETE_ALL_CMD", "delall")
+    CONNECT_COMMAND = os.environ.get("CONNECT_COMMAND", "connect")
+    DISCONNECT_COMMAND = os.environ.get("DISCONNECT_COMMAND", "disconnect")
 
-
-    # To record start time of bot
+    # Track bot's start time
     BOT_START_TIME = time.time()
