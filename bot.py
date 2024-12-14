@@ -3,10 +3,9 @@ import pyrogram
 
 # Check if running in webhook mode
 if bool(os.environ.get("WEBHOOK", False)):
-    from sample_config import Config
+    from sample_config import Config  # If running in webhook mode, use sample_config
 else:
-    from config import Config
-
+    from config import Config  # Otherwise, use config (fallback)
 
 if __name__ == "__main__":
     # Define plugins directory
