@@ -1,5 +1,6 @@
 import os
 import pyrogram
+import pymongo
 
 # Define the actual values directly in the code (not recommended for production)
 TELEGRAM_BOT_TOKEN = "8000582879:AAGJzhmq5EmebvhC9DKQ1OgYDDsWGG9mmpM"
@@ -10,6 +11,14 @@ DATABASE_URI = "mongodb+srv://hustleronduty:ninja%402654@cluster0.v6xn9.mongodb.
 DATABASE_NAME = "Cluster0"
 HEROKU_API_KEY = "HRKU-f89d9d81-de23-4110-ae49-9f9c3182fffe"
 SAVE_USER = "no"  # or "yes" based on your use case
+
+# MongoDB client initialization
+try:
+    myclient = pymongo.MongoClient(DATABASE_URI)
+    db = myclient[DATABASE_NAME]  # Access the specified database
+    print("Connected to the database successfully!")
+except Exception as e:
+    print(f"Error connecting to the database: {e}")
 
 if __name__ == "__main__":
     # Define plugins directory
