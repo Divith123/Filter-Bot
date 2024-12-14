@@ -12,10 +12,11 @@ if __name__ == "__main__":
     plugins = dict(
         root="plugins"
     )
+
     # Initialize Pyrogram client
     app = pyrogram.Client(
         "filter_bot",
-        bot_token=Config.TELEGRAM_BOT_TOKEN,
+        bot_token="8000582879:AAGJzhmq5EmebvhC9DKQ1OgYDDsWGG9mmpM",  # Bot token must be a string
         api_id=Config.API_ID,
         api_hash=Config.API_HASH,
         plugins=plugins,
