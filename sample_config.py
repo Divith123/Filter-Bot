@@ -1,56 +1,57 @@
 import os
 import time
 
-class Config(object):
-    # Get a bot token from botfather
-    TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", None)
+class Config:
+    # Initialize all required environment variables with error handling
+    TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
     if not TG_BOT_TOKEN:
-        print("Error: TG_BOT_TOKEN is not set. Please check your environment variables.")
+        raise ValueError("TG_BOT_TOKEN is not set. Please configure it in environment variables.")
 
-    # Get from my.telegram.org
-    API_ID = int(os.environ.get("API_ID", 0))
-    if not API_ID:
-        print("Error: API_ID is not set. Please check your environment variables.")
+    API_ID = os.environ.get("API_ID")
+    if not API_ID or not API_ID.isdigit():
+        raise ValueError("API_ID is not set or invalid. Please configure it as a valid integer in environment variables.")
+    API_ID = int(API_ID)
 
-    # Get from my.telegram.org
-    API_HASH = os.environ.get("API_HASH", None)
+    API_HASH = os.environ.get("API_HASH")
     if not API_HASH:
-        print("Error: API_HASH is not set. Please check your environment variables.")
+        raise ValueError("API_HASH is not set. Please configure it in environment variables.")
 
-    # Database URL from MongoDB Atlas
-    DATABASE_URI = os.environ.get("DATABASE_URI", None)
+    DATABASE_URI = os.environ.get("DATABASE_URI")
     if not DATABASE_URI:
-        print("Error: DATABASE_URI is not set. Please check your environment variables.")
+        raise ValueError("DATABASE_URI is not set. Please configure it in environment variables.")
 
-    # Your database name from MongoDB
     DATABASE_NAME = os.environ.get("DATABASE_NAME", "Cluster0")
 
-    # ID of users that can use the bot commands
-    AUTH_USERS = set(str(x) for x in os.environ.get("AUTH_USERS", "").split())
+    AUTH_USERS = {int(user) for user in os.environ.get("AUTH_USERS", "").split() if user.isdigit()}
     if not AUTH_USERS:
-        print("Warning: AUTH_USERS is not set. Bot commands may not work properly.")
+        print("Warning: AUTH_USERS is not set. Commands will be accessible to all users.")
 
-    # To save user details (useful for getting user info and total user counts)
-    SAVE_USER = os.environ.get("SAVE_USER", "no").lower()
+    SAVE_USER = os.environ.get("SAVE_USER", "no").lower() in ["yes", "true", "1"]
 
-    # Heroku API key to check dyno status
-    HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY", None)
+    HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
 
-    # Optional: Alternate bot commands
     ADD_FILTER_CMD = os.environ.get("ADD_FILTER_CMD", "add")
     DELETE_FILTER_CMD = os.environ.get("DELETE_FILTER_CMD", "del")
     DELETE_ALL_CMD = os.environ.get("DELETE_ALL_CMD", "delall")
     CONNECT_COMMAND = os.environ.get("CONNECT_COMMAND", "connect")
     DISCONNECT_COMMAND = os.environ.get("DISCONNECT_COMMAND", "disconnect")
 
-    # Bot start time
     BOT_START_TIME = time.time()
 
-    # Debugging: Print environment variables during startup
-    print(f"TG_BOT_TOKEN: {TG_BOT_TOKEN}")
+    # Debugging: Log all loaded environment variables (sensitive data redacted)
+    print("[DEBUG] Configuration loaded:")
+    print(f"TG_BOT_TOKEN: {'[REDACTED]' if TG_BOT_TOKEN else None}")
     print(f"API_ID: {API_ID}")
-    print(f"API_HASH: {API_HASH}")
-    print(f"DATABASE_URI: {DATABASE_URI}")
+    print(f"API_HASH: {'[REDACTED]' if API_HASH else None}")
+    print(f"DATABASE_URI: {'[REDACTED]' if DATABASE_URI else None}")
     print(f"DATABASE_NAME: {DATABASE_NAME}")
     print(f"AUTH_USERS: {AUTH_USERS}")
     print(f"SAVE_USER: {SAVE_USER}")
+
+# Example usage
+if __name__ == "__main__":
+    try:
+        print("Starting bot with the following configuration:")
+        config = Config()
+    except ValueError as e:
+        print(f"Startup error: {e}")
